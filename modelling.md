@@ -125,4 +125,16 @@ memory??
   we gain useful properties
   we also introduce new possible failure modes
 
+if we choose to model memory,
+we should also model its failure modes! i.e. random degradation
 
+in terms of failure modes, we can also think about modelling the following:
+- partitions between groups of actors that prevent messages from being delivered
+- random or deterministic deaths of actors or groups of actors
+
+---
+
+something important to explore:
+trust models
+in line with questions about what actors can know about each other; and
+coupling that with decision-making logic.
