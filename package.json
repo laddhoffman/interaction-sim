@@ -1,0 +1,24 @@
+{
+  "name": "interaction-sim",
+  "version": "1.0.0",
+  "description": "Likely candidate for software platform is Erlang VM; interested in pursuing Elixir as the language of choice for the project. Reasons to use erlang:   - it has a nice actor + messaging model that would be suitable for this type of simulation   - it should be able to scale to multiple processors and multiple machines if necessary   - it provides APIs for components to be written in other languages and to interact with the platform",
+  "main": "test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/laddhoffman/interaction-sim.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/laddhoffman/interaction-sim/issues"
+  },
+  "homepage": "https://github.com/laddhoffman/interaction-sim#readme",
+  "dependencies": {
+    "bluebird": "^3.5.2",
+    "debug": "^4.0.1",
+    "underscore": "^1.9.1"
+  }
+}
