@@ -1,4 +1,6 @@
-const { Core, Actor } = require('./src/core.js');
+const Promise = require('bluebird'),
+  debug = require('debug')('test'),
+  { Core, Actor } = require('./src/core.js');
 
 // class Actor1 extends Actor {
 //  onMessage(data) {
@@ -15,6 +17,10 @@ const { Core, Actor } = require('./src/core.js');
 // actor 1 generates event 1, which contains the name of a fruit.
 // actor 2 receives event 1, which adds the name of a month and generates event 2.
 // actor 3 receives event 2, and takes some action based on fruit, month values.
+
+const randomBetween = (min, max) => {
+  return min + (max - min) * Math.random();
+};
 
 const model = new Core();
 
@@ -68,7 +74,51 @@ actor0.scheduleAction({
   }
 });
 
+const actors = [actor0, actor1, actor2];
+
+const angelOfDeath = new Actor('angelOfDeath', data => {
+  // we can use this to schedule ourselves to run again
+  if (data.content.run !== true) {
+    exit;
+  }
+
+  // Kill one actor at random
+  let n = Math.floor(Math.random() * actors.length);
+  let actor = actors[n];
+  debug(`killing ${actor.id}`);
+  model.killById(actor.id);
+
+  return [
+    {
+      delay: randomBetween(10,20),
+      type: 'message',
+      data: {
+        dest: 'angelOfDeath',
+        content: {
+          run: true,
+        },
+      }
+    },
+  ];
+})
+  .scheduleAction({
+    delay: randomBetween(10,20),
+    type: 'message',
+    data: {
+      dest: 'angelOfDeath',
+      content: {
+        run: true,
+      },
+    }
+  });
+
 model.addHandler(filter1, handler1)
-  .addActors([actor0, actor1, actor2])
+  .addActors(actors)
+  .addActor(angelOfDeath)
   .execute()
+  .timeout(1000)
+  .then(() => debug('resolved successfully'))
+  .catch(Promise.TimeoutError, e => {
+    debug('timed out');
+  })
   .then(() => process.exit(0));

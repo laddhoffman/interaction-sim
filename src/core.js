@@ -27,6 +27,20 @@ class Core {
     return this;
   }
 
+  killById(id) {
+    let actor = this.actors.find(element => element.id === id);
+    if (!actor) {
+      debug(`cannot kill by id: '$id' not found`);
+    }
+    actor.kill();
+    return this;
+  }
+
+  killByIndex(n) {
+    this.actors[n].kill();
+    return this;
+  }
+
   callHandlers(action) {
     debug('callHandlers');
     this.handlers.forEach(handler => {
@@ -44,6 +58,11 @@ class Core {
     let actor = this.actors.find(actor => actor.id === data.dest);
     if (!actor) {
       throw new Error(`actor '${data.dest}' not found`);
+    }
+    if (actor.isDead()) {
+      // Can't send message to dead actor
+      debug(`sendMessage: actor '$(actor.id)' is dead`);
+      return Promise.resolve();
     }
     let actions = actor.onMessage(data);
     debug('sendMessage, resulting actions:', actions);
@@ -98,7 +117,12 @@ class Actor {
     array.forEach(data => this.scheduleAction(data));
     return this;
   }
-  // spawnActor() {}
+  kill(at = new Date()) {
+    this.killed = at;
+  }
+  isDead() {
+    return this.killed ? true: false;
+  }
   // suggest((whatYouSee, whatISee, conditionsToSatisfy) => {});
 }
 

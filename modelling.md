@@ -138,3 +138,37 @@ something important to explore:
 trust models
 in line with questions about what actors can know about each other; and
 coupling that with decision-making logic.
+
+---
+
+Ok, here are my latest thoughts...
+Maybe we can subclass Actor into Worker and Storage
+Worker can receive messages, doesn't have any persistent storage of its own
+Storage only implements a specialized interface to store and retrieve data
+This isn't a huge advance but it's a step along the way
+Next we need to handle timeouts somehow
+Again we're confronted with the question of what to do in the event of failure
+Storage, by the way, can have different properties, which this model should
+allow us to explore.
+A reliable retry mechanism will have to utilize storage
+It will have to store records about pending items
+and in the event that it restarts it would need to read that storage
+and of course there would be a risk of redelivery, in order to avoid the risk of
+no delivery.
+
+We could abstract this and just represent properties about it.
+It might be interesting to implement the details, and instructive about the
+workings of such systmes, but might not be worth the effort!
+But it might be important to do so, as we are trying to make decisions about
+what mechanisms to use in real systems. It might be best not to preclude these
+decisions by making assumptions up-front.
+We can sketch the model of such a component in a course-grained fashion; that's
+probably a good compromise without getting into every detail but representing it
+in a suffciently generic way.
+
+RabbitMQ for example uses the Mnesia database provided by Erlang.
+I think it favors performance and is not necessarily brilliant at
+fault-tolerance / handling network partitions.
+Which, too, points out the need for testing apparati that can run and test real
+applications.
+
